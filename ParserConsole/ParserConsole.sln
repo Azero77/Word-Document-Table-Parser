@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParserConsole", "ParserConsole\ParserConsole.csproj", "{43B4CB16-76FB-4E86-AA50-0BC43E76DD93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordDocumentTableParserProject", "WordDocumentTableParserProject\WordDocumentTableParserProject.csproj", "{CEF06EDA-DD88-43A7-B47B-6C8340179AE6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{43B4CB16-76FB-4E86-AA50-0BC43E76DD93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43B4CB16-76FB-4E86-AA50-0BC43E76DD93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43B4CB16-76FB-4E86-AA50-0BC43E76DD93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43B4CB16-76FB-4E86-AA50-0BC43E76DD93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEF06EDA-DD88-43A7-B47B-6C8340179AE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEF06EDA-DD88-43A7-B47B-6C8340179AE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEF06EDA-DD88-43A7-B47B-6C8340179AE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEF06EDA-DD88-43A7-B47B-6C8340179AE6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7982B79D-EFC3-4260-8C44-ED433E513112}
+	EndGlobalSection
+EndGlobal
