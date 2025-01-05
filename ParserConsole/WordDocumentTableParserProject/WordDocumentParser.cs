@@ -16,7 +16,7 @@ namespace WordDocumentTableParserProject
         private readonly IWriter _writer;
         private QuestionParser? _questionParser;
 
-        public WordDocumentParser(string documentPath, IWriter writer)
+        private WordDocumentParser(string documentPath, IWriter writer)
         {
             _documentPath = documentPath;
             _writer = writer;
