@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Wordprocessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,9 @@ namespace WordDocumentTableParserProject
     /// </summary>
     public interface IQuestionFormatter
     {
-        string Format(TableCell cell,QuestionPart questionPart);
-        string Format(TableCell cell);
+        string Format(OpenXmlElement cell,QuestionPart questionPart);
+        string Format(OpenXmlElement cell);
+        IEnumerable<string> FormatMany(OpenXmlElement cell, QuestionPart questionPart, Func<OpenXmlElement, IEnumerable<OpenXmlElement>> selector);
     }
 
     public enum QuestionPart

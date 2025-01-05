@@ -7,11 +7,17 @@ namespace ParserConsole
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            WordDocumentParser parser = WordDocumentParser.LoadWordDocumentParser(@"E:\Chemistry\Bank\EquillibrumBank.docx", new JsonFileWriter("test.json"));
-            parser.ParseAsync().Wait();
-            Console.WriteLine("Converstion Worked Successfully");
+            if (args.Length != 2)
+                Console.WriteLine("must specify document route and json file route");
+            string word_document_path = args[0];
+            string json_file_path = args[1];
+            WordDocumentParser parser = WordDocumentParser.LoadWordDocumentParser(word_document_path, new JsonFileWriter(json_file_path));
+            Console.WriteLine("Loading...");
+            await parser.ParseAsync();
+            Console.Clear();
+            Console.WriteLine("Fininshed Converting...");
             Console.Read();
         }
     }

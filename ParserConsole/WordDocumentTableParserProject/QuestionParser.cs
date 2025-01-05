@@ -71,16 +71,10 @@ namespace WordDocumentTableParserProject
             {
                 Question question = new()
                 {
-                    QuestionText = _formatter.Format(oddCells.ElementAt(1),QuestionPart.Text),
-                    Answer = _formatter.Format(evenCells.ElementAt(2),QuestionPart.Answer)
+                    QuestionText = _formatter.Format(oddCells.ElementAt(1), QuestionPart.Text),
+                    Answer = _formatter.Format(evenCells.ElementAt(2), QuestionPart.Answer),
+                    Choices = _formatter.FormatMany(evenCells.ElementAt(1), QuestionPart.Choices, (element) => element.Elements<Paragraph>()).ToList()
                 };
-
-                // Extract choices from the second column of the even row
-                var choicesParagraphs = evenCells.ElementAt(1).Elements<Paragraph>();
-                foreach (var paragraph in choicesParagraphs)
-                {
-                    question.Choices.Add(paragraph.InnerText.Trim());
-                }
                 return question;
 
             }
