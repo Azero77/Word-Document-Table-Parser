@@ -16,5 +16,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\dwml_cs\dwml_cs.csproj" />
+	</ItemGroup>
 
 </Project>

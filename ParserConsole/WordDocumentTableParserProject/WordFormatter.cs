@@ -27,7 +27,7 @@ namespace WordDocumentTableParserProject
             foreach (var paragraph in cell.Elements<Paragraph>())
             {
                 // Recursively find all OfficeMath elements within the paragraph
-                var mathElements = paragraph.Descendants<OfficeMath>();
+                var mathElements = paragraph.Descendants<DocumentFormat.OpenXml.Math.OfficeMath>();
                 foreach (var element in mathElements)
                 {
                     // Convert OfficeMath to LaTeX
@@ -40,7 +40,7 @@ namespace WordDocumentTableParserProject
                 var text = string.Join("", paragraph.Descendants<Run>().Select(r => r.InnerText));
                 result.Append(text);
 
-                result.AppendLine(); // Add line breaks between paragraphs
+                //result.AppendLine(); // Add line breaks between paragraphs
             }
 
             return result.ToString();

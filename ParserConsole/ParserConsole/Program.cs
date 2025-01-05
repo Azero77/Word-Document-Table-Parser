@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using mxd.Dwml;
+using System.Xml;
+using System.Xml.Linq;
 using WordDocumentTableParserProject;
 
 namespace ParserConsole
