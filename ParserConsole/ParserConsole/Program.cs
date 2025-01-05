@@ -10,7 +10,10 @@ namespace ParserConsole
         static async Task Main(string[] args)
         {
             if (args.Length != 2)
+            {
                 Console.WriteLine("must specify document route and json file route");
+                return;
+            }
             string word_document_path = args[0];
             string json_file_path = args[1];
             WordDocumentParser parser = WordDocumentParser.LoadWordDocumentParser(word_document_path, new JsonFileWriter(json_file_path));
