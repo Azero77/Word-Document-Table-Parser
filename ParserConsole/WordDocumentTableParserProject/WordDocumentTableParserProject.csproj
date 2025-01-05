@@ -4,6 +4,15 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<PackageId>WordDocumentParser</PackageId>
+	  <Authors>Azero Zaggar</Authors>
+	  <Description>Parser For Taking Word Documents and convert it to json</Description>
+	  <PackageTags>Word Document Json Question Quiz</PackageTags>
+	  <PackageProjectUrl>https://github.com/Azero77/Word-Document-Table-Parser.git</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/Azero77/Word-Document-Table-Parser.git</RepositoryUrl>
+	  <RepositoryType>git</RepositoryType>
+	  <IncludeSymbol>true</IncludeSymbol>
+	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
