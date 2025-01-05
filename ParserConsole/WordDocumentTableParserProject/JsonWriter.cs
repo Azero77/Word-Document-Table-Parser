@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace WordDocumentTableParserProject
@@ -10,30 +11,42 @@ namespace WordDocumentTableParserProject
     /// <summary>
     /// Writing .docx file into .json file question by question
     /// </summary>
-    public class JsonWriter : IWriter
+    public class JsonFileWriter : IWriter
     {
         
-        private readonly FileStream _file;
+        private readonly JsonWriter _writer;
+        private readonly JsonSerializer _serializer = new() { Formatting = Formatting.Indented };
 
-        public JsonWriter(string path)
+        public JsonFileWriter(string path)
         {
-            _file = File.Create(path);
+            _writer = new JsonTextWriter(new StreamWriter(path));
+            InitializeWriter();
         }
 
-        public JsonWriter(FileStream file)
+        public JsonFileWriter(JsonWriter writer)
         {
-            _file = file;
+            _writer = writer;
+            InitializeWriter();
+        }
+
+        private void InitializeWriter()
+        {
+            _writer.WriteStartArray();
         }
 
         public Task WriteAsync(Question question)
         {
-            return JsonSerializer.SerializeAsync<Question>(_file,question);
+            return Task.Run(() =>
+            {
+                _serializer.Serialize(_writer, question);
+            });
         }
 
 
-        public ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            return _file.DisposeAsync();
+            _writer.WriteEndArray();
+            await _writer.CloseAsync();
         }
     }
 }

@@ -17,28 +17,47 @@ namespace WordDocumentTableParserProject
     public class QuestionParser : IDisposable
     {
         private readonly WordprocessingDocument _document;
+        private Table? _table;
+        private IEnumerator<TableRow> _enumerator;
         public QuestionParser(WordprocessingDocument document)
         {
             _document = document;
+            AssignTable();
+            _enumerator = RowGenerator().GetEnumerator();
         }
+
+        private void AssignTable()
+        {
+            IEnumerable<Table> tables = _document?.MainDocumentPart?.Document?.Body?.Elements<Table>() ?? throw new InvalidDataException("Invalid Document");
+            if (tables.Count() != 1)
+                throw new InvalidDataException("Document Contains zero or More than one table please select the current table by index or name");
+            _table = tables.Single();
+        }
+
+
         /// <summary>
         /// Generator for questions to lazy load every question
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Question> GetQuestion()
+        public IEnumerable<Question> GetQuestions()
         {
             TableRow evenRow, oddRow;
-            (evenRow, oddRow) = AssignRows();
-            if (oddRow != null && evenRow != null)
+            int i = 0;
+            while (i++ < 8)
             {
-                Question question = ProcessQuestion(evenRow, oddRow);
-                yield return question;
+                if (!_enumerator.MoveNext()) yield break; // No more rows to process
+                oddRow = _enumerator.Current;
+
+                if (!_enumerator.MoveNext())
+                    throw new InvalidDataException("Document must have an even number of rows for questions and answers.");
+
+                evenRow = _enumerator.Current;
+
+                yield return ProcessQuestion(evenRow, oddRow);
             }
-            else
-                yield break;
         }
 
-        private static Question ProcessQuestion(TableRow evenRow, TableRow oddRow)
+        private Question ProcessQuestion(TableRow evenRow, TableRow oddRow)
         {
             var oddCells = oddRow.Elements<TableCell>();
             var evenCells = evenRow.Elements<TableCell>();
@@ -71,10 +90,10 @@ namespace WordDocumentTableParserProject
         private (TableRow even,TableRow odd) AssignRows()
         {
             TableRow even,odd;
-            IEnumerator<TableRow> enumerator = RowGenerator().GetEnumerator();
-            odd = enumerator.Current;
-            enumerator.MoveNext();
-            even = enumerator.Current;
+            _enumerator.MoveNext();
+            odd = _enumerator.Current;
+            _enumerator.MoveNext();
+            even = _enumerator.Current;
             return (even, odd);
         }
 
@@ -84,11 +103,8 @@ namespace WordDocumentTableParserProject
         /// <returns></returns>
         private IEnumerable<TableRow> RowGenerator()
         {
-            IEnumerable<Table> tables = _document?.MainDocumentPart?.Document?.Body?.Elements<Table>() ?? throw new InvalidDataException("Invalid Document");
-            if (tables.Count() != 1)
-                throw new InvalidDataException("Document Contains zero or More than one table please select the current table by index or name");
-            Table table = tables.Single();
-            IEnumerable<TableRow> rows = table.Elements<TableRow>();
+           
+            IEnumerable<TableRow> rows = _table?.Elements<TableRow>() ?? throw new InvalidDataException("No Rows Are Added");
             foreach (var row in rows)
             {
                 yield return row;

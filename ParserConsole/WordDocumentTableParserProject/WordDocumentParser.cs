@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace WordDocumentTableParserProject
 {
+    //Adapter For writer and questionParser
     public class WordDocumentParser : IFileParser
     {
         private readonly string _documentPath;
@@ -37,8 +38,14 @@ namespace WordDocumentTableParserProject
 
         public async Task ParseAsync()
         {
-            var list = _questionParser?.ParseQuestions(_documentPath);
-            await Console.Out.WriteLineAsync(JsonSerializer.Serialize(list));
+            //Every QUESTION parsed will be writting to a file by the writer
+            var questions = _questionParser?.GetQuestions()!;
+            foreach (var question in questions)
+            {
+                await _writer.WriteAsync(question);
+            }
+
+            await _writer.DisposeAsync();
         }
     }
 }
