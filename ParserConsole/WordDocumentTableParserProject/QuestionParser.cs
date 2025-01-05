@@ -18,7 +18,7 @@ namespace WordDocumentTableParserProject
     public class QuestionParser : IDisposable
     {
         private readonly WordprocessingDocument _document;
-        private readonly IQuestionFormatter _formatter = new JsonFormatter();
+        private readonly IQuestionFormatter _formatter = new WordFormatter();
         private Table? _table;
         private IEnumerator<TableRow> _enumerator;
         public QuestionParser(WordprocessingDocument document)
