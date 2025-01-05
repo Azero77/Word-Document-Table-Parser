@@ -10,7 +10,7 @@ namespace WordDocumentTableParserProject
     {
         public List<string> Choices { get; set; } = new List<string>();
         public required string QuestionText { get; set; }
-        public int QuestionAnswerIndex { get; set; }
+        public string Answer { get; set; } = string.Empty;
 
     }
 }

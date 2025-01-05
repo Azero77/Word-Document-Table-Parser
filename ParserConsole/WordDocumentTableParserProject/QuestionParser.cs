@@ -13,10 +13,12 @@ namespace WordDocumentTableParserProject
 {
     /// <summary>
     /// Take the question from the table and lazily load it
+    /// Role: Parser the table and validate the rows and columns
     /// </summary>
     public class QuestionParser : IDisposable
     {
         private readonly WordprocessingDocument _document;
+        private readonly IQuestionFormatter _formatter = new JsonFormatter();
         private Table? _table;
         private IEnumerator<TableRow> _enumerator;
         public QuestionParser(WordprocessingDocument document)
@@ -25,7 +27,10 @@ namespace WordDocumentTableParserProject
             AssignTable();
             _enumerator = RowGenerator().GetEnumerator();
         }
-
+        public QuestionParser(WordprocessingDocument document, IQuestionFormatter formatter) : this(document)
+        {
+            _formatter = formatter;
+        }
         private void AssignTable()
         {
             IEnumerable<Table> tables = _document?.MainDocumentPart?.Document?.Body?.Elements<Table>() ?? throw new InvalidDataException("Invalid Document");
@@ -66,8 +71,8 @@ namespace WordDocumentTableParserProject
             {
                 Question question = new()
                 {
-                    QuestionText = GetTextFromCell(oddCells.ElementAt(1)),
-                    QuestionAnswerIndex = (GetTextFromCell(evenCells.ElementAt(2)))[0] - 'A'
+                    QuestionText = _formatter.Format(oddCells.ElementAt(1),QuestionPart.Text),
+                    Answer = _formatter.Format(evenCells.ElementAt(2),QuestionPart.Answer)
                 };
 
                 // Extract choices from the second column of the even row
@@ -80,22 +85,8 @@ namespace WordDocumentTableParserProject
 
             }
             throw new InvalidDataException("Must Have Three columns for each row");
-
-            string GetTextFromCell(TableCell cell)
-            {
-                return cell.InnerText.Trim();
-            }
         }
 
-        private (TableRow even,TableRow odd) AssignRows()
-        {
-            TableRow even,odd;
-            _enumerator.MoveNext();
-            odd = _enumerator.Current;
-            _enumerator.MoveNext();
-            even = _enumerator.Current;
-            return (even, odd);
-        }
 
         /// <summary>
         /// Lazily load every table row 
