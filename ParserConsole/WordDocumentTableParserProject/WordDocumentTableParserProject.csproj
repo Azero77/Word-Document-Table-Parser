@@ -11,7 +11,7 @@
 	  <PackageProjectUrl>https://github.com/Azero77/Word-Document-Table-Parser.git</PackageProjectUrl>
 	  <RepositoryUrl>https://github.com/Azero77/Word-Document-Table-Parser.git</RepositoryUrl>
 	  <RepositoryType>git</RepositoryType>
-	  <IncludeSymbol>true</IncludeSymbol>
+	  <IncludeSymbols>true</IncludeSymbols>
 	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
