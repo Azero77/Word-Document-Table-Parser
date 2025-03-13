@@ -18,7 +18,7 @@ namespace WordDocumentTableParserProject
     public class QuestionParser : IDisposable
     {
         private readonly WordprocessingDocument _document;
-        private readonly IQuestionFormatter _formatter = new WordFormatter();
+        private readonly IQuestionFormatter _formatter = new MathJaxWordFormatter();
         private Table? _table;
         private IEnumerator<TableRow> _enumerator;
         public QuestionParser(WordprocessingDocument document)
@@ -47,8 +47,7 @@ namespace WordDocumentTableParserProject
         public IEnumerable<Question> GetQuestions()
         {
             TableRow evenRow, oddRow;
-            int i = 0;
-            while (i++ < 8)
+            while (true)
             {
                 if (!_enumerator.MoveNext()) yield break; // No more rows to process
                 oddRow = _enumerator.Current;
