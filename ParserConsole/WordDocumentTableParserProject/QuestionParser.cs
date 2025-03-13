@@ -18,7 +18,7 @@ namespace WordDocumentTableParserProject
     public class QuestionParser : IDisposable
     {
         private readonly WordprocessingDocument _document;
-        private readonly IQuestionFormatter _formatter = new MathJaxWordFormatter();
+        private readonly IQuestionFormatter _formatter;
         private Table? _table;
         private IEnumerator<TableRow> _enumerator;
         public QuestionParser(WordprocessingDocument document)
@@ -26,6 +26,7 @@ namespace WordDocumentTableParserProject
             _document = document;
             AssignTable();
             _enumerator = RowGenerator().GetEnumerator();
+            _formatter = new MathJaxWordFormatter();
         }
         public QuestionParser(WordprocessingDocument document, IQuestionFormatter formatter) : this(document)
         {
@@ -61,7 +62,7 @@ namespace WordDocumentTableParserProject
             }
         }
 
-        private Question ProcessQuestion(TableRow evenRow, TableRow oddRow)
+        protected virtual Question ProcessQuestion(TableRow evenRow, TableRow oddRow)
         {
             var oddCells = oddRow.Elements<TableCell>();
             var evenCells = evenRow.Elements<TableCell>();
