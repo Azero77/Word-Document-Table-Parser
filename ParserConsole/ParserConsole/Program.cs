@@ -2,6 +2,7 @@
 using System.Xml;
 using System.Xml.Linq;
 using WordDocumentTableParserProject;
+using WordDocumentTableParserProject.WordFileParser;
 
 namespace ParserConsole
 {

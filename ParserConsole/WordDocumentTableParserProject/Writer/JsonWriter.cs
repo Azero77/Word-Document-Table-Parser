@@ -6,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WordDocumentTableParserProject
+namespace WordDocumentTableParserProject.Writer
 {
     /// <summary>
     /// Writing .docx file into .json file question by question
     /// </summary>
     public class JsonFileWriter : IWriter
     {
-        
+
         private readonly JsonWriter _writer;
         private readonly JsonSerializer _serializer = new() { Formatting = Formatting.Indented };
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WordDocumentTableParserProject
+namespace WordDocumentTableParserProject.Writer
 {
     /// <summary>
     /// Interface For Writing .docx file into  (stream,memory,db,....)
