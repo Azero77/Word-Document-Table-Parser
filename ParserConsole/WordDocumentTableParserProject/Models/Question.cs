@@ -30,7 +30,8 @@ namespace WordDocumentTableParserProject
     public enum QuestionSentenceType
     {
         SimpleText,
-        Equation,
+        ParagraphEquation,
+        InlineEquation,
         ImageUrl,
         CodeBlock,
         Table

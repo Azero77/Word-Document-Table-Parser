@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using WordDocumentTableParserProject.Models;
@@ -34,7 +35,9 @@ namespace WordDocumentTableParserProject.Formatter
             List<List<QuestionSentence>> questionSentences = new();
             foreach (Paragraph p in questionChoices.Elements<Paragraph>())
             {
-                questionSentences.Add(FormatQuestionText(p));
+                List<QuestionSentence> result = new();
+                FormatElement(p, result);
+                questionSentences.Add(result);
             }
             return questionSentences;
         }
@@ -42,16 +45,16 @@ namespace WordDocumentTableParserProject.Formatter
         private List<QuestionSentence> FormatQuestionText(OpenXmlElement questionText)
         {
             var result = new List<QuestionSentence>();
-
-            FormatElement(questionText, result);
+            foreach (Paragraph paragraph in questionText.Elements<Paragraph>())
+            {
+                FormatElement(paragraph, result);
+            }
             return result;
         }
 
-        private void FormatElement(OpenXmlElement questionText, List<QuestionSentence> result)
+        private void FormatElement(OpenXmlElement outerElement, List<QuestionSentence> result)
         {
-            foreach (Paragraph paragraph in questionText.Elements<Paragraph>())
-            {
-                foreach (OpenXmlElement elem in paragraph.Elements())
+                foreach (OpenXmlElement elem in outerElement.Elements())
                 {
                     if (elem is Run run)
                     {
@@ -67,22 +70,50 @@ namespace WordDocumentTableParserProject.Formatter
                     {
                         result.Add(FormatMath(mathElement));
                     }
+                    else if (elem is DocumentFormat.OpenXml.Math.Paragraph mathParagraph)
+                    {
+                        result.Add(FormatMathParagraph(mathParagraph));
+                    }
                 }
-            }
         }
 
 
         // Format mathematical equations into LaTeX
         private QuestionSentence FormatMath(DocumentFormat.OpenXml.Math.OfficeMath oMathElement)
         {
-            _document.LoadXml(oMathElement.OuterXml);
-            string latex = MLConverter.Convert(_document.DocumentElement);
-            latex = Regex.Replace(latex, pattern, replacement);
+            string latex = LoadMathElement(oMathElement);
             return new QuestionSentence
             {
                 Text = $"\\({latex}\\)",
-                QuestionSentenceType = QuestionSentenceType.Equation
+                QuestionSentenceType = QuestionSentenceType.InlineEquation
             };
+        }
+        /// <summary>
+        /// Formatting MathParagraph
+        /// </summary>
+        /// <param name="oMathElement"></param>
+        /// <returns></returns>
+        private QuestionSentence FormatMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathElement)
+        {
+            StringBuilder builder = new();
+            foreach (DocumentFormat.OpenXml.Math.OfficeMath mathElem in oMathElement.Elements<DocumentFormat.OpenXml.Math.OfficeMath>())
+            {
+                string latex = LoadMathElement(mathElem);
+                builder.Append(latex);
+            }
+            return new QuestionSentence
+            {
+                Text = $"\\({builder}\\)",
+                QuestionSentenceType = QuestionSentenceType.ParagraphEquation
+            };
+        }
+
+        private string LoadMathElement(OpenXmlElement oMathElement)
+        {
+            _document.LoadXml(oMathElement.OuterXml);
+            string latex = MLConverter.Convert(_document.DocumentElement);
+            latex = Regex.Replace(latex, pattern, replacement);
+            return latex;
         }
 
         // Extract the answer from the answer element
