@@ -9,15 +9,13 @@ namespace WordDocumentTableParserProject
 {
     public class Question
     {
-        public List<List<QuestionSegment>> QuestionChoices { get; set; } = null!; //every choice is a list of Question segment
-        public required List<QuestionSegment> QuestionText { get; set; }
+        public List<List<QuestionSentence>> QuestionChoices { get; set; } = null!; //every choice is a list of Question segment
+        public List<QuestionSentence> QuestionText { get; set; } = null!;
         public string Answer { get; set; } = string.Empty;
     }
 
-    public class QuestionSegment
-    {
-        public List<QuestionSentence> Sentences = null!;
-    }
+    //every question segment contains sentences that have some properties
+    
 
     public class QuestionSentence
     {
