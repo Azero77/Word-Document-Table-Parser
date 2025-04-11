@@ -66,14 +66,16 @@ namespace WordDocumentTableParserProject.QuestionParsers
 
             if (oddCells.Count() == 3 && evenCells.Count() == 3)
             {
-                return  new RawQuestion()
+                var x = new RawQuestion()
                 {
                     QuestionText = oddCells.ElementAt(1),
                     QuestionAnswer = evenCells.ElementAt(2),
                     QuestionChoices = evenCells.ElementAt(1)
                 };
+                return x;
 
             }
+
             throw new InvalidDataException("Must Have Three columns for each row");
         }
         public void Dispose()

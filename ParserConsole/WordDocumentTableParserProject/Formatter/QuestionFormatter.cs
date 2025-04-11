@@ -117,9 +117,15 @@ namespace WordDocumentTableParserProject.Formatter
         }
 
         // Extract the answer from the answer element
-        private string ExtractAnswer(OpenXmlElement answerElement)
+        private byte? ExtractAnswer(OpenXmlElement answerElement)
         {
-            return answerElement.InnerText; // Assuming the answer is plain text
+            char choice;
+            char.TryParse(answerElement.InnerText, out choice);
+            if (char.IsLetter(choice))
+            {
+                return (byte) (choice - 'A');
+            }
+            return null;
         }
 
         // TODO: Implement formatter for images or other complex elements

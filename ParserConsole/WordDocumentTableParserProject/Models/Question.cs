@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace WordDocumentTableParserProject
     {
         public List<List<QuestionSentence>> QuestionChoices { get; set; } = null!; //every choice is a list of Question segment
         public List<QuestionSentence> QuestionText { get; set; } = null!;
-        public string Answer { get; set; } = string.Empty;
+        public byte? Answer { get; set; }
     }
 
     //every question segment contains sentences that have some properties
@@ -22,7 +23,7 @@ namespace WordDocumentTableParserProject
         public string Text { get; set; } = string.Empty;
         public QuestionSentenceType QuestionSentenceType { get; set; } = QuestionSentenceType.SimpleText;
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string? AltText { get; set; } = null;
 
     }
