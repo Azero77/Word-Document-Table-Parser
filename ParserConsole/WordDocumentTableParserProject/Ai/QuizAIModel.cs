@@ -23,8 +23,8 @@ namespace WordDocumentTableParserProject.Ai
             _configuration = configuration;
             _apiKey = configuration?["ApiKey"] ?? string.Empty;
             _baseUrl = configuration?["BaseUrl"] ?? string.Empty;
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
             _client.BaseAddress = new Uri(_baseUrl);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
         }
 
         public async Task<AIModelResult> GetResponseAsync(string prompt)
@@ -41,6 +41,11 @@ namespace WordDocumentTableParserProject.Ai
                 stop = (string?)null
             };
 
+            return await ProcessRequest(requestBody);
+        }
+
+        private async Task<AIModelResult> ProcessRequest(object requestBody)
+        {
             string json = JsonConvert.SerializeObject(requestBody);
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -64,7 +69,23 @@ namespace WordDocumentTableParserProject.Ai
             }
         }
 
-        public async IAsyncEnumerable<string> GetStreamingResponseAsync(string prompt)
+        public async Task<AIModelResult> GetResponseAsync(string prompt, byte[] fileBytes)
+        {
+            string? fileBase64 = Convert.ToBase64String(fileBytes);
+            var requestBody = new
+            {
+                messages = new[] { new { role = "user", content = prompt, file = fileBase64 } },
+                model = _configuration?["model"] ?? string.Empty,
+                temperature = 1,
+                max_completion_tokens = int.TryParse(_configuration?["max_completion_tokens"], out var tokens) ? tokens : 1024,
+                top_p = float.TryParse(_configuration?["top_p"], out var topP) ? topP : 1f,
+                stream = false,
+                stop = (string?)null
+            };
+            return await ProcessRequest(requestBody);
+        }
+
+        public IAsyncEnumerable<string> GetStreamingResponseAsync(string prompt)
         {
             var requestBody = new
             {
@@ -76,7 +97,11 @@ namespace WordDocumentTableParserProject.Ai
                 stream = true,
                 stop = (string?)null
             };
+            return ProcessRequestStreamBody(requestBody);
+        }
 
+        private async IAsyncEnumerable<string> ProcessRequestStreamBody(object requestBody)
+        {
             var json = JsonConvert.SerializeObject(requestBody);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -105,8 +130,24 @@ namespace WordDocumentTableParserProject.Ai
                 ChatCompletionResponse? completion = JsonConvert.DeserializeObject<ChatCompletionResponse>(jsonPart);
                 var messageContent = completion?.Choices?.FirstOrDefault()?.Delta?.Content;
                 if (!string.IsNullOrWhiteSpace(messageContent))
-                    yield return messageContent ?? string.Empty;               
+                    yield return messageContent ?? string.Empty;
             }
+        }
+
+        public IAsyncEnumerable<string> GetStreamingResponseAsync(string prompt, byte[] fileBytes)
+        {
+            string? fileBase64 = Convert.ToBase64String(fileBytes);
+            var requestBody = new
+            {
+                messages = new[] { new { role = "user", content = prompt,file =  fileBase64} },
+                model = _configuration?["model"] ?? string.Empty,
+                temperature = 1,
+                max_completion_tokens = int.TryParse(_configuration?["max_completion_tokens"], out var tokens) ? tokens : 1024,
+                top_p = float.TryParse(_configuration?["top_p"], out var topP) ? topP : 1f,
+                stream = true,
+                stop = (string?)null
+            };
+            return ProcessRequestStreamBody(requestBody);
         }
 
         class ChatCompletionResponse
@@ -137,6 +178,27 @@ namespace WordDocumentTableParserProject.Ai
         {
             [JsonProperty("content")]
             public string? Content { get; set; }
+        }
+        public async Task WriteStreamingResponseAsync(Stream stream,string prompt)
+        {
+            using (StreamWriter writer = new(stream))
+            {
+                await foreach (string chunk in GetStreamingResponseAsync(prompt))
+                {
+                    await writer.WriteAsync(chunk);
+                }
+            }
+        }
+
+        public async Task WriteStreamingResponseAsync(Stream stream, string prompt, byte[] fileBytes)
+        {
+            using (StreamWriter writer = new(stream))
+            {
+                await foreach (string chunk in GetStreamingResponseAsync(prompt,fileBytes))
+                {
+                    await writer.WriteAsync(chunk);
+                }
+            }
         }
     }
 }

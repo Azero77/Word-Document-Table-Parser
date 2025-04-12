@@ -9,6 +9,6 @@ namespace WordDocumentTableParserProject.Selector
 {
     public interface IQuestionSelector
     {
-        IEnumerable<Question> Process(WordprocessingDocument document);
+        IAsyncEnumerable<Question> Process(WordprocessingDocument document);
     }
 }

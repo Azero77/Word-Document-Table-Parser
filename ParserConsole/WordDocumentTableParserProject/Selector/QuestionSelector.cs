@@ -21,10 +21,10 @@ namespace WordDocumentTableParserProject.Selector
             _formatter = formatter;
         }
 
-        public IEnumerable<Question> Process(WordprocessingDocument document)
+        public async IAsyncEnumerable<Question> Process(WordprocessingDocument document)
         {
             var rawQuestions = _parser.ProcessDocument(document);
-            foreach (RawQuestion rawQuestion in rawQuestions)
+            await foreach (RawQuestion rawQuestion in rawQuestions)
             {
                 yield return _formatter.Format(rawQuestion);
             }

@@ -34,7 +34,7 @@ namespace WordDocumentTableParserProject.WordFileParser
         {
             //Every QUESTION parsed will be writting to a file by the writer
             var questions = _selector?.Process(_document)!;
-            foreach (var question in questions)
+            await foreach (var question in questions)
             {
                 await _writer.WriteAsync(question);
             }

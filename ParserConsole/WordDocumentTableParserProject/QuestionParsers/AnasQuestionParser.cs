@@ -27,7 +27,7 @@ namespace WordDocumentTableParserProject.QuestionParsers
                 yield return row;
             }
         }
-        public IEnumerable<RawQuestion> ProcessDocument(WordprocessingDocument document)
+        public async IAsyncEnumerable<RawQuestion> ProcessDocument(WordprocessingDocument document)
         {
             AssignFields(document);
             TableRow evenRow, oddRow;

@@ -30,29 +30,29 @@ namespace WordDocumentTableParserProject.Formatter
             return question;
         }
 
-        private List<List<QuestionSentence>> FormatQuestionChoices(OpenXmlElement questionChoices)
+        private List<string> FormatQuestionChoices(OpenXmlElement questionChoices)
         {
-            List<List<QuestionSentence>> questionSentences = new();
+            List<string> questionSentences = new();
             foreach (Paragraph p in questionChoices.Elements<Paragraph>())
             {
-                List<QuestionSentence> result = new();
+                StringBuilder result = new();
                 FormatElement(p, result);
-                questionSentences.Add(result);
+                questionSentences.Add(result.ToString());
             }
             return questionSentences;
         }
 
-        private List<QuestionSentence> FormatQuestionText(OpenXmlElement questionText)
+        private string FormatQuestionText(OpenXmlElement questionText)
         {
-            var result = new List<QuestionSentence>();
+            var result = new StringBuilder();
             foreach (Paragraph paragraph in questionText.Elements<Paragraph>())
             {
                 FormatElement(paragraph, result);
             }
-            return result;
+            return result.ToString();
         }
 
-        private void FormatElement(OpenXmlElement outerElement, List<QuestionSentence> result)
+        private void FormatElement(OpenXmlElement outerElement, StringBuilder result)
         {
                 foreach (OpenXmlElement elem in outerElement.Elements())
                 {
@@ -60,40 +60,32 @@ namespace WordDocumentTableParserProject.Formatter
                     {
                         //should add use case for images in the future here
                         //we are assuming for now that each run element contains only text
-                        result.Add(new QuestionSentence()
-                        {
-                            Text = string.Concat(run.Elements<Text>().Select(t => t.Text)),
-                            QuestionSentenceType = QuestionSentenceType.SimpleText
-                        });
+                        result.Append(string.Concat(run.Elements<Text>().Select(t => t.Text)));
                     }
                     else if (elem is DocumentFormat.OpenXml.Math.OfficeMath mathElement) 
                     {
-                        result.Add(FormatMath(mathElement));
+                        result.Append(FormatMath(mathElement));
                     }
                     else if (elem is DocumentFormat.OpenXml.Math.Paragraph mathParagraph)
                     {
-                        result.Add(FormatMathParagraph(mathParagraph));
+                        result.Append(FormatMathParagraph(mathParagraph));
                     }
                 }
         }
 
 
         // Format mathematical equations into LaTeX
-        private QuestionSentence FormatMath(DocumentFormat.OpenXml.Math.OfficeMath oMathElement)
+        private string FormatMath(DocumentFormat.OpenXml.Math.OfficeMath oMathElement)
         {
             string latex = LoadMathElement(oMathElement);
-            return new QuestionSentence
-            {
-                Text = $"\\({latex}\\)",
-                QuestionSentenceType = QuestionSentenceType.InlineEquation
-            };
+            return $"\\({latex}\\)";
         }
         /// <summary>
         /// Formatting MathParagraph
         /// </summary>
         /// <param name="oMathElement"></param>
         /// <returns></returns>
-        private QuestionSentence FormatMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathElement)
+        private string FormatMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathElement)
         {
             StringBuilder builder = new();
             foreach (DocumentFormat.OpenXml.Math.OfficeMath mathElem in oMathElement.Elements<DocumentFormat.OpenXml.Math.OfficeMath>())
@@ -101,11 +93,8 @@ namespace WordDocumentTableParserProject.Formatter
                 string latex = LoadMathElement(mathElem);
                 builder.Append(latex);
             }
-            return new QuestionSentence
-            {
-                Text = $"\\({builder}\\)",
-                QuestionSentenceType = QuestionSentenceType.ParagraphEquation
-            };
+
+            return $"\\({builder.ToString()}\\)";
         }
 
         private string LoadMathElement(OpenXmlElement oMathElement)

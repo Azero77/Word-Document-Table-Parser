@@ -10,6 +10,6 @@ namespace WordDocumentTableParserProject.QuestionParsers
 {
     public interface IQuestionParser : IDisposable
     {
-        IEnumerable<RawQuestion> ProcessDocument(WordprocessingDocument document);
+        IAsyncEnumerable<RawQuestion> ProcessDocument(WordprocessingDocument document);
     }
 }

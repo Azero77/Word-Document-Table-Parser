@@ -10,8 +10,8 @@ namespace WordDocumentTableParserProject
 {
     public class Question
     {
-        public List<List<QuestionSentence>> QuestionChoices { get; set; } = null!; //every choice is a list of Question segment
-        public List<QuestionSentence> QuestionText { get; set; } = null!;
+        public List<string> QuestionChoices { get; set; } = null!; //every choice is a list of Question segment
+        public string QuestionText { get; set; } = null!;
         public byte? Answer { get; set; }
     }
 
